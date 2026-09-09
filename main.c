@@ -126,6 +126,49 @@ int escolher_instancia_rate(
     return escolhida;
 }
 
+int escolher_instancia_edf(
+    Tarefa tarefas[],
+    Instancia instancias[],
+    int quantidade,
+    int tempo)
+{
+    int escolhida = -1;
+
+    for (int i = 0; i < quantidade; i++) {
+        if (instancias[i].chegada > tempo)
+            continue;
+
+        if (instancias[i].concluida || instancias[i].perdida)
+            continue;
+
+        if (tempo >= instancias[i].deadline)
+            continue;
+
+        if (escolhida == -1) {
+            escolhida = i;
+            continue;
+        }
+
+        int tarefa_atual = instancias[i].tarefa;
+        int tarefa_escolhida = instancias[escolhida].tarefa;
+
+        if (instancias[i].deadline <
+            instancias[escolhida].deadline) {
+
+            escolhida = i;
+        } else if (
+            instancias[i].deadline ==
+            instancias[escolhida].deadline &&
+            tarefas[tarefa_atual].ordem <
+            tarefas[tarefa_escolhida].ordem) {
+
+            escolhida = i;
+        }
+    }
+
+    return escolhida;
+}
+
 void verificar_deadlines(
     Instancia instancias[],
     int quantidade,
@@ -158,6 +201,103 @@ void executar_rate(
         verificar_deadlines(instancias, quantidade, tempo);
 
         int escolhida = escolher_instancia_rate(
+            tarefas,
+            instancias,
+            quantidade,
+            tempo);
+
+        if (escolhida == -1) {
+            if (inicio != -1) {
+                fprintf(saida,
+                        "[%s] for %d units - F\n",
+                        tarefas[instancias[inicio].tarefa].nome,
+                        tempo - inicio);
+                inicio = -1;
+            }
+
+            tempo++;
+            continue;
+        }
+
+        if (inicio != escolhida) {
+            if (inicio != -1) {
+                fprintf(saida,
+                        "[%s] for %d units - F\n",
+                        tarefas[instancias[inicio].tarefa].nome,
+                        tempo - inicio);
+            }
+
+            inicio = escolhida;
+        }
+
+        instancias[escolhida].executou = 1;
+        instancias[escolhida].restante--;
+        tempo++;
+
+        if (instancias[escolhida].restante == 0)
+            instancias[escolhida].concluida = 1;
+    }
+
+    if (inicio != -1) {
+        fprintf(saida,
+                "[%s] for %d units - F\n",
+                tarefas[instancias[inicio].tarefa].nome,
+                tempo - inicio);
+    }
+
+    fprintf(saida, "\nLOST DEADLINES\n");
+
+    for (int i = 0; i < quantidade; i++) {
+        if (instancias[i].perdida) {
+            fprintf(saida,
+                    "[%s] %d\n",
+                    tarefas[instancias[i].tarefa].nome,
+                    instancias[i].tarefa);
+        }
+    }
+
+    fprintf(saida, "\nCOMPLETE EXECUTION\n");
+
+    for (int i = 0; i < quantidade; i++) {
+        if (instancias[i].concluida) {
+            fprintf(saida,
+                    "[%s] %d\n",
+                    tarefas[instancias[i].tarefa].nome,
+                    instancias[i].tarefa);
+        }
+    }
+
+    fprintf(saida, "\nKILLED\n");
+
+    for (int i = 0; i < quantidade; i++) {
+        if (!instancias[i].concluida &&
+            !instancias[i].perdida &&
+            instancias[i].chegada < tempo_total) {
+
+            fprintf(saida,
+                    "[%s] %d\n",
+                    tarefas[instancias[i].tarefa].nome,
+                    instancias[i].tarefa);
+        }
+    }
+}
+
+void executar_edf(
+    Tarefa tarefas[],
+    Instancia instancias[],
+    int quantidade,
+    int tempo_total,
+    FILE *saida)
+{
+    fprintf(saida, "EXECUTION BY EDF\n");
+
+    int tempo = 0;
+    int inicio = -1;
+
+    while (tempo < tempo_total) {
+        verificar_deadlines(instancias, quantidade, tempo);
+
+        int escolhida = escolher_instancia_edf(
             tarefas,
             instancias,
             quantidade,
@@ -328,12 +468,6 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (strcmp(argv[1], "rate") != 0) {
-        fprintf(stderr,
-                "Erro: EDF sera implementado no proximo commit.\n");
-        return 1;
-    }
-
     qsort(
         tarefas,
         num_tarefas,
@@ -348,7 +482,11 @@ int main(int argc, char *argv[])
         tempo_total,
         instancias);
 
-    FILE *saida = fopen("rate_gbm.out", "w");
+    const char *nome_saida = (strcmp(argv[1], "rate") == 0)
+        ? "rate_gbm.out"
+        : "edf_gbm.out";
+
+    FILE *saida = fopen(nome_saida, "w");
 
     if (saida == NULL) {
         fprintf(stderr,
@@ -356,12 +494,21 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    executar_rate(
-        tarefas,
-        instancias,
-        quantidade,
-        tempo_total,
-        saida);
+    if (strcmp(argv[1], "rate") == 0) {
+        executar_rate(
+            tarefas,
+            instancias,
+            quantidade,
+            tempo_total,
+            saida);
+    } else {
+        executar_edf(
+            tarefas,
+            instancias,
+            quantidade,
+            tempo_total,
+            saida);
+    }
 
     fclose(saida);
 
