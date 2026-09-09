@@ -3,6 +3,7 @@
 #include <string.h>
 
 #define MAX_TAREFAS 100
+#define MAX_INSTANCIAS 10000
 #define TAM_NOME 50
 
 typedef struct {
@@ -10,167 +11,357 @@ typedef struct {
     int periodo;
     int deadline;
     int burst;
+    int ordem;
 } Tarefa;
+
+typedef struct {
+    int tarefa;
+    int chegada;
+    int deadline;
+    int restante;
+    int concluida;
+    int perdida;
+    int executou;
+} Instancia;
 
 int validar_tarefa(const Tarefa *tarefa)
 {
     if (tarefa->periodo <= 0 ||
         tarefa->deadline <= 0 ||
-        tarefa->burst <= 0) {
+        tarefa->burst <= 0)
         return 0;
-    }
 
-    if (tarefa->burst > tarefa->deadline) {
+    if (tarefa->burst > tarefa->deadline)
         return 0;
-    }
 
-    if (tarefa->deadline > tarefa->periodo) {
+    if (tarefa->deadline > tarefa->periodo)
         return 0;
-    }
 
     return 1;
 }
 
-const char *nome_saida(const char *algoritmo)
+int comparar_rate(const void *a, const void *b)
 {
-    if (strcmp(algoritmo, "rate") == 0) {
-        return "rate_gbm.out";
+    const Tarefa *ta = a;
+    const Tarefa *tb = b;
+
+    if (ta->periodo != tb->periodo)
+        return ta->periodo - tb->periodo;
+
+    return ta->ordem - tb->ordem;
+}
+
+int criar_instancias(
+    Tarefa tarefas[],
+    int num_tarefas,
+    int tempo_total,
+    Instancia instancias[])
+{
+    int quantidade = 0;
+
+    for (int i = 0; i < num_tarefas; i++) {
+        for (int chegada = 0;
+             chegada < tempo_total;
+             chegada += tarefas[i].periodo) {
+
+            if (quantidade >= MAX_INSTANCIAS)
+                return quantidade;
+
+            instancias[quantidade].tarefa = i;
+            instancias[quantidade].chegada = chegada;
+            instancias[quantidade].deadline =
+                chegada + tarefas[i].deadline;
+            instancias[quantidade].restante = tarefas[i].burst;
+            instancias[quantidade].concluida = 0;
+            instancias[quantidade].perdida = 0;
+            instancias[quantidade].executou = 0;
+
+            quantidade++;
+        }
     }
 
-    return "edf_gbm.out";
+    return quantidade;
+}
+
+int escolher_instancia_rate(
+    Tarefa tarefas[],
+    Instancia instancias[],
+    int quantidade,
+    int tempo)
+{
+    int escolhida = -1;
+
+    for (int i = 0; i < quantidade; i++) {
+        if (instancias[i].chegada > tempo)
+            continue;
+
+        if (instancias[i].concluida || instancias[i].perdida)
+            continue;
+
+        if (tempo >= instancias[i].deadline)
+            continue;
+
+        if (escolhida == -1) {
+            escolhida = i;
+            continue;
+        }
+
+        int tarefa_atual = instancias[i].tarefa;
+        int tarefa_escolhida = instancias[escolhida].tarefa;
+
+        if (tarefas[tarefa_atual].periodo <
+            tarefas[tarefa_escolhida].periodo) {
+
+            escolhida = i;
+        } else if (
+            tarefas[tarefa_atual].periodo ==
+            tarefas[tarefa_escolhida].periodo &&
+            tarefas[tarefa_atual].ordem <
+            tarefas[tarefa_escolhida].ordem) {
+
+            escolhida = i;
+        }
+    }
+
+    return escolhida;
+}
+
+void verificar_deadlines(
+    Instancia instancias[],
+    int quantidade,
+    int tempo)
+{
+    for (int i = 0; i < quantidade; i++) {
+        if (instancias[i].concluida || instancias[i].perdida)
+            continue;
+
+        if (tempo >= instancias[i].deadline) {
+            instancias[i].perdida = 1;
+            instancias[i].restante = 0;
+        }
+    }
+}
+
+void executar_rate(
+    Tarefa tarefas[],
+    Instancia instancias[],
+    int quantidade,
+    int tempo_total,
+    FILE *saida)
+{
+    fprintf(saida, "EXECUTION BY RATE\n");
+
+    int tempo = 0;
+    int inicio = -1;
+
+    while (tempo < tempo_total) {
+        verificar_deadlines(instancias, quantidade, tempo);
+
+        int escolhida = escolher_instancia_rate(
+            tarefas,
+            instancias,
+            quantidade,
+            tempo);
+
+        if (escolhida == -1) {
+            if (inicio != -1) {
+                fprintf(saida,
+                        "[%s] for %d units - F\n",
+                        tarefas[instancias[inicio].tarefa].nome,
+                        tempo - inicio);
+                inicio = -1;
+            }
+
+            tempo++;
+            continue;
+        }
+
+        if (inicio != escolhida) {
+            if (inicio != -1) {
+                fprintf(saida,
+                        "[%s] for %d units - F\n",
+                        tarefas[instancias[inicio].tarefa].nome,
+                        tempo - inicio);
+            }
+
+            inicio = escolhida;
+        }
+
+        instancias[escolhida].executou = 1;
+        instancias[escolhida].restante--;
+        tempo++;
+
+        if (instancias[escolhida].restante == 0)
+            instancias[escolhida].concluida = 1;
+    }
+
+    if (inicio != -1) {
+        fprintf(saida,
+                "[%s] for %d units - F\n",
+                tarefas[instancias[inicio].tarefa].nome,
+                tempo - inicio);
+    }
+
+    fprintf(saida, "\nLOST DEADLINES\n");
+
+    for (int i = 0; i < quantidade; i++) {
+        if (instancias[i].perdida) {
+            fprintf(saida,
+                    "[%s] %d\n",
+                    tarefas[instancias[i].tarefa].nome,
+                    instancias[i].tarefa);
+        }
+    }
+
+    fprintf(saida, "\nCOMPLETE EXECUTION\n");
+
+    for (int i = 0; i < quantidade; i++) {
+        if (instancias[i].concluida) {
+            fprintf(saida,
+                    "[%s] %d\n",
+                    tarefas[instancias[i].tarefa].nome,
+                    instancias[i].tarefa);
+        }
+    }
+
+    fprintf(saida, "\nKILLED\n");
+
+    for (int i = 0; i < quantidade; i++) {
+        if (!instancias[i].concluida &&
+            !instancias[i].perdida &&
+            instancias[i].chegada < tempo_total) {
+
+            fprintf(saida,
+                    "[%s] %d\n",
+                    tarefas[instancias[i].tarefa].nome,
+                    instancias[i].tarefa);
+        }
+    }
 }
 
 int main(int argc, char *argv[])
 {
     if (argc != 3) {
         fprintf(stderr,
-                "Erro: uso correto: ./scheduler <rate|edf> <arquivo>\n");
+                "Uso: %s <rate|edf> <arquivo>\n",
+                argv[0]);
         return 1;
     }
 
     if (strcmp(argv[1], "rate") != 0 &&
         strcmp(argv[1], "edf") != 0) {
+
         fprintf(stderr,
-                "Erro: algoritmo deve ser 'rate' ou 'edf'.\n");
+                "Erro: algoritmo deve ser rate ou edf.\n");
         return 1;
     }
 
-    FILE *arquivo = fopen(argv[2], "r");
+    FILE *entrada = fopen(argv[2], "r");
 
-    if (arquivo == NULL) {
+    if (entrada == NULL) {
         fprintf(stderr,
-                "Erro: nao foi possivel abrir o arquivo '%s'.\n",
-                argv[2]);
+                "Erro: nao foi possivel abrir o arquivo.\n");
         return 1;
     }
 
     int tempo_total;
 
-    if (fscanf(arquivo, "%d", &tempo_total) != 1) {
+    if (fscanf(entrada, "%d", &tempo_total) != 1 ||
+        tempo_total <= 0) {
+
         fprintf(stderr,
-                "Erro: tempo total de simulacao invalido.\n");
-
-        fclose(arquivo);
-        return 1;
-    }
-
-    if (tempo_total <= 0) {
-        fprintf(stderr,
-                "Erro: tempo total deve ser positivo.\n");
-
-        fclose(arquivo);
+                "Erro: tempo total invalido.\n");
+        fclose(entrada);
         return 1;
     }
 
     Tarefa tarefas[MAX_TAREFAS];
-    int quantidade_tarefas = 0;
+    int num_tarefas = 0;
 
-    while (quantidade_tarefas < MAX_TAREFAS) {
-
+    while (1) {
         Tarefa tarefa;
 
         int resultado = fscanf(
-            arquivo,
+            entrada,
             "%49s %d %d %d",
             tarefa.nome,
             &tarefa.periodo,
             &tarefa.deadline,
-            &tarefa.burst
-        );
+            &tarefa.burst);
 
-        if (resultado == EOF) {
+        if (resultado == EOF)
             break;
-        }
 
         if (resultado != 4) {
             fprintf(stderr,
-                    "Erro: tarefa malformada no arquivo de entrada.\n");
-
-            fclose(arquivo);
+                    "Erro: entrada invalida.\n");
+            fclose(entrada);
             return 1;
         }
+
+        if (num_tarefas >= MAX_TAREFAS) {
+            fprintf(stderr,
+                    "Erro: numero maximo de tarefas excedido.\n");
+            fclose(entrada);
+            return 1;
+        }
+
+        tarefa.ordem = num_tarefas;
 
         if (!validar_tarefa(&tarefa)) {
             fprintf(stderr,
-                    "Erro: tarefa '%s' possui valores invalidos.\n",
+                    "Erro: parametros invalidos para tarefa %s.\n",
                     tarefa.nome);
-
-            fclose(arquivo);
+            fclose(entrada);
             return 1;
         }
 
-        tarefas[quantidade_tarefas] = tarefa;
-        quantidade_tarefas++;
+        tarefas[num_tarefas] = tarefa;
+        num_tarefas++;
     }
 
-    if (quantidade_tarefas == MAX_TAREFAS) {
-        Tarefa extra;
+    fclose(entrada);
 
-        if (fscanf(
-                arquivo,
-                "%49s %d %d %d",
-                extra.nome,
-                &extra.periodo,
-                &extra.deadline,
-                &extra.burst
-            ) == 4) {
-
-            fprintf(stderr,
-                    "Erro: numero de tarefas excede o limite de %d.\n",
-                    MAX_TAREFAS);
-
-            fclose(arquivo);
-            return 1;
-        }
-    }
-
-    fclose(arquivo);
-
-    const char *arquivo_saida = nome_saida(argv[1]);
-
-    FILE *saida = fopen(arquivo_saida, "w");
-
-    if (saida == NULL) {
+    if (num_tarefas == 0) {
         fprintf(stderr,
-                "Erro: nao foi possivel criar o arquivo de saida.\n");
+                "Erro: nenhuma tarefa encontrada.\n");
         return 1;
     }
 
-    fprintf(saida, "SIMULACAO\n");
-    fprintf(saida, "ALGORITMO: %s\n", argv[1]);
-    fprintf(saida, "TEMPO TOTAL: %d\n", tempo_total);
-    fprintf(saida, "TAREFAS: %d\n", quantidade_tarefas);
-
-    for (int i = 0; i < quantidade_tarefas; i++) {
-        fprintf(
-            saida,
-            "%s %d %d %d\n",
-            tarefas[i].nome,
-            tarefas[i].periodo,
-            tarefas[i].deadline,
-            tarefas[i].burst
-        );
+    if (strcmp(argv[1], "rate") != 0) {
+        fprintf(stderr,
+                "Erro: EDF sera implementado no proximo commit.\n");
+        return 1;
     }
+
+    qsort(
+        tarefas,
+        num_tarefas,
+        sizeof(Tarefa),
+        comparar_rate);
+
+    Instancia instancias[MAX_INSTANCIAS];
+
+    int quantidade = criar_instancias(
+        tarefas,
+        num_tarefas,
+        tempo_total,
+        instancias);
+
+    FILE *saida = fopen("rate_gbm.out", "w");
+
+    if (saida == NULL) {
+        fprintf(stderr,
+                "Erro: nao foi possivel criar arquivo de saida.\n");
+        return 1;
+    }
+
+    executar_rate(
+        tarefas,
+        instancias,
+        quantidade,
+        tempo_total,
+        saida);
 
     fclose(saida);
 
