@@ -40,17 +40,6 @@ int validar_tarefa(const Tarefa *tarefa)
     return 1;
 }
 
-int comparar_rate(const void *a, const void *b)
-{
-    const Tarefa *ta = a;
-    const Tarefa *tb = b;
-
-    if (ta->periodo != tb->periodo)
-        return ta->periodo - tb->periodo;
-
-    return ta->ordem - tb->ordem;
-}
-
 int criar_instancias(
     Tarefa tarefas[],
     int num_tarefas,
@@ -185,17 +174,55 @@ void verificar_deadlines(
     }
 }
 
+void imprimir_resumo(
+    Tarefa tarefas[],
+    Instancia instancias[],
+    int quantidade,
+    int num_tarefas,
+    FILE *saida)
+{
+    int perdidas[MAX_TAREFAS] = {0};
+    int concluidas[MAX_TAREFAS] = {0};
+    int mortas[MAX_TAREFAS] = {0};
+
+    for (int i = 0; i < quantidade; i++) {
+        int t = instancias[i].tarefa;
+
+        if (instancias[i].perdida) {
+            perdidas[t]++;
+        } else if (instancias[i].concluida) {
+            concluidas[t]++;
+        } else {
+            mortas[t]++;
+        }
+    }
+
+    fprintf(saida, "\nLOST DEADLINES\n");
+    for (int i = 0; i < num_tarefas; i++)
+        fprintf(saida, "[%s] %d\n", tarefas[i].nome, perdidas[i]);
+
+    fprintf(saida, "\nCOMPLETE EXECUTION\n");
+    for (int i = 0; i < num_tarefas; i++)
+        fprintf(saida, "[%s] %d\n", tarefas[i].nome, concluidas[i]);
+
+    fprintf(saida, "\nKILLED\n");
+    for (int i = 0; i < num_tarefas; i++)
+        fprintf(saida, "[%s] %d\n", tarefas[i].nome, mortas[i]);
+}
+
 void executar_rate(
     Tarefa tarefas[],
     Instancia instancias[],
     int quantidade,
+    int num_tarefas,
     int tempo_total,
     FILE *saida)
 {
     fprintf(saida, "EXECUTION BY RATE\n");
 
     int tempo = 0;
-    int inicio = -1;
+    int executando = -1;
+    int inicio = 0;
 
     while (tempo < tempo_total) {
         verificar_deadlines(instancias, quantidade, tempo);
@@ -206,93 +233,66 @@ void executar_rate(
             quantidade,
             tempo);
 
-        if (escolhida == -1) {
-            if (inicio != -1) {
+        if (escolhida != executando) {
+            if (executando != -1) {
+                char rotulo = instancias[executando].concluida
+                    ? 'F'
+                    : (instancias[executando].perdida ? 'L' : 'H');
+
                 fprintf(saida,
-                        "[%s] for %d units - F\n",
-                        tarefas[instancias[inicio].tarefa].nome,
-                        tempo - inicio);
-                inicio = -1;
+                        "[%s] for %d units - %c\n",
+                        tarefas[instancias[executando].tarefa].nome,
+                        tempo - inicio,
+                        rotulo);
+            } else if (tempo > inicio) {
+                fprintf(saida, "idle for %d units\n", tempo - inicio);
             }
 
-            tempo++;
-            continue;
+            inicio = tempo;
+            executando = escolhida;
         }
 
-        if (inicio != escolhida) {
-            if (inicio != -1) {
-                fprintf(saida,
-                        "[%s] for %d units - F\n",
-                        tarefas[instancias[inicio].tarefa].nome,
-                        tempo - inicio);
-            }
+        if (executando != -1) {
+            instancias[executando].executou = 1;
+            instancias[executando].restante--;
 
-            inicio = escolhida;
+            if (instancias[executando].restante == 0)
+                instancias[executando].concluida = 1;
         }
 
-        instancias[escolhida].executou = 1;
-        instancias[escolhida].restante--;
         tempo++;
-
-        if (instancias[escolhida].restante == 0)
-            instancias[escolhida].concluida = 1;
     }
 
-    if (inicio != -1) {
+    if (executando != -1) {
+        char rotulo = instancias[executando].concluida
+            ? 'F'
+            : (instancias[executando].perdida ? 'L' : 'H');
+
         fprintf(saida,
-                "[%s] for %d units - F\n",
-                tarefas[instancias[inicio].tarefa].nome,
-                tempo - inicio);
+                "[%s] for %d units - %c\n",
+                tarefas[instancias[executando].tarefa].nome,
+                tempo - inicio,
+                rotulo);
+    } else if (tempo > inicio) {
+        fprintf(saida, "idle for %d units\n", tempo - inicio);
     }
 
-    fprintf(saida, "\nLOST DEADLINES\n");
-
-    for (int i = 0; i < quantidade; i++) {
-        if (instancias[i].perdida) {
-            fprintf(saida,
-                    "[%s] %d\n",
-                    tarefas[instancias[i].tarefa].nome,
-                    instancias[i].tarefa);
-        }
-    }
-
-    fprintf(saida, "\nCOMPLETE EXECUTION\n");
-
-    for (int i = 0; i < quantidade; i++) {
-        if (instancias[i].concluida) {
-            fprintf(saida,
-                    "[%s] %d\n",
-                    tarefas[instancias[i].tarefa].nome,
-                    instancias[i].tarefa);
-        }
-    }
-
-    fprintf(saida, "\nKILLED\n");
-
-    for (int i = 0; i < quantidade; i++) {
-        if (!instancias[i].concluida &&
-            !instancias[i].perdida &&
-            instancias[i].chegada < tempo_total) {
-
-            fprintf(saida,
-                    "[%s] %d\n",
-                    tarefas[instancias[i].tarefa].nome,
-                    instancias[i].tarefa);
-        }
-    }
+    imprimir_resumo(tarefas, instancias, quantidade, num_tarefas, saida);
 }
 
 void executar_edf(
     Tarefa tarefas[],
     Instancia instancias[],
     int quantidade,
+    int num_tarefas,
     int tempo_total,
     FILE *saida)
 {
     fprintf(saida, "EXECUTION BY EDF\n");
 
     int tempo = 0;
-    int inicio = -1;
+    int executando = -1;
+    int inicio = 0;
 
     while (tempo < tempo_total) {
         verificar_deadlines(instancias, quantidade, tempo);
@@ -303,80 +303,51 @@ void executar_edf(
             quantidade,
             tempo);
 
-        if (escolhida == -1) {
-            if (inicio != -1) {
+        if (escolhida != executando) {
+            if (executando != -1) {
+                char rotulo = instancias[executando].concluida
+                    ? 'F'
+                    : (instancias[executando].perdida ? 'L' : 'H');
+
                 fprintf(saida,
-                        "[%s] for %d units - F\n",
-                        tarefas[instancias[inicio].tarefa].nome,
-                        tempo - inicio);
-                inicio = -1;
+                        "[%s] for %d units - %c\n",
+                        tarefas[instancias[executando].tarefa].nome,
+                        tempo - inicio,
+                        rotulo);
+            } else if (tempo > inicio) {
+                fprintf(saida, "idle for %d units\n", tempo - inicio);
             }
 
-            tempo++;
-            continue;
+            inicio = tempo;
+            executando = escolhida;
         }
 
-        if (inicio != escolhida) {
-            if (inicio != -1) {
-                fprintf(saida,
-                        "[%s] for %d units - F\n",
-                        tarefas[instancias[inicio].tarefa].nome,
-                        tempo - inicio);
-            }
+        if (executando != -1) {
+            instancias[executando].executou = 1;
+            instancias[executando].restante--;
 
-            inicio = escolhida;
+            if (instancias[executando].restante == 0)
+                instancias[executando].concluida = 1;
         }
 
-        instancias[escolhida].executou = 1;
-        instancias[escolhida].restante--;
         tempo++;
-
-        if (instancias[escolhida].restante == 0)
-            instancias[escolhida].concluida = 1;
     }
 
-    if (inicio != -1) {
+    if (executando != -1) {
+        char rotulo = instancias[executando].concluida
+            ? 'F'
+            : (instancias[executando].perdida ? 'L' : 'H');
+
         fprintf(saida,
-                "[%s] for %d units - F\n",
-                tarefas[instancias[inicio].tarefa].nome,
-                tempo - inicio);
+                "[%s] for %d units - %c\n",
+                tarefas[instancias[executando].tarefa].nome,
+                tempo - inicio,
+                rotulo);
+    } else if (tempo > inicio) {
+        fprintf(saida, "idle for %d units\n", tempo - inicio);
     }
 
-    fprintf(saida, "\nLOST DEADLINES\n");
-
-    for (int i = 0; i < quantidade; i++) {
-        if (instancias[i].perdida) {
-            fprintf(saida,
-                    "[%s] %d\n",
-                    tarefas[instancias[i].tarefa].nome,
-                    instancias[i].tarefa);
-        }
-    }
-
-    fprintf(saida, "\nCOMPLETE EXECUTION\n");
-
-    for (int i = 0; i < quantidade; i++) {
-        if (instancias[i].concluida) {
-            fprintf(saida,
-                    "[%s] %d\n",
-                    tarefas[instancias[i].tarefa].nome,
-                    instancias[i].tarefa);
-        }
-    }
-
-    fprintf(saida, "\nKILLED\n");
-
-    for (int i = 0; i < quantidade; i++) {
-        if (!instancias[i].concluida &&
-            !instancias[i].perdida &&
-            instancias[i].chegada < tempo_total) {
-
-            fprintf(saida,
-                    "[%s] %d\n",
-                    tarefas[instancias[i].tarefa].nome,
-                    instancias[i].tarefa);
-        }
-    }
+    imprimir_resumo(tarefas, instancias, quantidade, num_tarefas, saida);
 }
 
 int main(int argc, char *argv[])
@@ -468,12 +439,6 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    qsort(
-        tarefas,
-        num_tarefas,
-        sizeof(Tarefa),
-        comparar_rate);
-
     Instancia instancias[MAX_INSTANCIAS];
 
     int quantidade = criar_instancias(
@@ -499,6 +464,7 @@ int main(int argc, char *argv[])
             tarefas,
             instancias,
             quantidade,
+            num_tarefas,
             tempo_total,
             saida);
     } else {
@@ -506,6 +472,7 @@ int main(int argc, char *argv[])
             tarefas,
             instancias,
             quantidade,
+            num_tarefas,
             tempo_total,
             saida);
     }
