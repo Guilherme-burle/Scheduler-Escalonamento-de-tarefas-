@@ -21,7 +21,6 @@ typedef struct {
     int restante;
     int concluida;
     int perdida;
-    int executou;
 } Instancia;
 
 int validar_tarefa(const Tarefa *tarefa)
@@ -49,12 +48,9 @@ int criar_instancias(
     int quantidade = 0;
 
     for (int i = 0; i < num_tarefas; i++) {
-        for (int chegada = 0;
-             chegada < tempo_total;
-             chegada += tarefas[i].periodo) {
-
+        for (int chegada = 0; chegada < tempo_total; ) {
             if (quantidade >= MAX_INSTANCIAS)
-                return quantidade;
+                return -1;
 
             instancias[quantidade].tarefa = i;
             instancias[quantidade].chegada = chegada;
@@ -63,9 +59,13 @@ int criar_instancias(
             instancias[quantidade].restante = tarefas[i].burst;
             instancias[quantidade].concluida = 0;
             instancias[quantidade].perdida = 0;
-            instancias[quantidade].executou = 0;
 
             quantidade++;
+
+            if (tarefas[i].periodo > tempo_total - chegada)
+                break;
+
+            chegada += tarefas[i].periodo;
         }
     }
 
@@ -198,27 +198,37 @@ void imprimir_resumo(
     }
 
     fprintf(saida, "\nLOST DEADLINES\n");
+
     for (int i = 0; i < num_tarefas; i++)
-        fprintf(saida, "[%s] %d\n", tarefas[i].nome, perdidas[i]);
+        fprintf(saida, "[%s] %d\n",
+                tarefas[i].nome,
+                perdidas[i]);
 
     fprintf(saida, "\nCOMPLETE EXECUTION\n");
+
     for (int i = 0; i < num_tarefas; i++)
-        fprintf(saida, "[%s] %d\n", tarefas[i].nome, concluidas[i]);
+        fprintf(saida, "[%s] %d\n",
+                tarefas[i].nome,
+                concluidas[i]);
 
     fprintf(saida, "\nKILLED\n");
+
     for (int i = 0; i < num_tarefas; i++)
-        fprintf(saida, "[%s] %d\n", tarefas[i].nome, mortas[i]);
+        fprintf(saida, "[%s] %d\n",
+                tarefas[i].nome,
+                mortas[i]);
 }
 
-void executar_rate(
+void executar_simulacao(
     Tarefa tarefas[],
     Instancia instancias[],
     int quantidade,
     int num_tarefas,
     int tempo_total,
-    FILE *saida)
+    FILE *saida,
+    const char *algoritmo)
 {
-    fprintf(saida, "EXECUTION BY RATE\n");
+    fprintf(saida, "EXECUTION BY %s\n", algoritmo);
 
     int tempo = 0;
     int executando = -1;
@@ -227,17 +237,32 @@ void executar_rate(
     while (tempo < tempo_total) {
         verificar_deadlines(instancias, quantidade, tempo);
 
-        int escolhida = escolher_instancia_rate(
-            tarefas,
-            instancias,
-            quantidade,
-            tempo);
+        int escolhida;
+
+        if (strcmp(algoritmo, "RATE") == 0) {
+            escolhida = escolher_instancia_rate(
+                tarefas,
+                instancias,
+                quantidade,
+                tempo);
+        } else {
+            escolhida = escolher_instancia_edf(
+                tarefas,
+                instancias,
+                quantidade,
+                tempo);
+        }
 
         if (escolhida != executando) {
             if (executando != -1) {
-                char rotulo = instancias[executando].concluida
-                    ? 'F'
-                    : (instancias[executando].perdida ? 'L' : 'H');
+                char rotulo;
+
+                if (instancias[executando].concluida)
+                    rotulo = 'F';
+                else if (instancias[executando].perdida)
+                    rotulo = 'L';
+                else
+                    rotulo = 'H';
 
                 fprintf(saida,
                         "[%s] for %d units - %c\n",
@@ -245,7 +270,9 @@ void executar_rate(
                         tempo - inicio,
                         rotulo);
             } else if (tempo > inicio) {
-                fprintf(saida, "idle for %d units\n", tempo - inicio);
+                fprintf(saida,
+                        "idle for %d units\n",
+                        tempo - inicio);
             }
 
             inicio = tempo;
@@ -253,7 +280,6 @@ void executar_rate(
         }
 
         if (executando != -1) {
-            instancias[executando].executou = 1;
             instancias[executando].restante--;
 
             if (instancias[executando].restante == 0)
@@ -264,9 +290,14 @@ void executar_rate(
     }
 
     if (executando != -1) {
-        char rotulo = instancias[executando].concluida
-            ? 'F'
-            : (instancias[executando].perdida ? 'L' : 'H');
+        char rotulo;
+
+        if (instancias[executando].concluida)
+            rotulo = 'F';
+        else if (instancias[executando].perdida)
+            rotulo = 'L';
+        else
+            rotulo = 'H';
 
         fprintf(saida,
                 "[%s] for %d units - %c\n",
@@ -274,80 +305,17 @@ void executar_rate(
                 tempo - inicio,
                 rotulo);
     } else if (tempo > inicio) {
-        fprintf(saida, "idle for %d units\n", tempo - inicio);
-    }
-
-    imprimir_resumo(tarefas, instancias, quantidade, num_tarefas, saida);
-}
-
-void executar_edf(
-    Tarefa tarefas[],
-    Instancia instancias[],
-    int quantidade,
-    int num_tarefas,
-    int tempo_total,
-    FILE *saida)
-{
-    fprintf(saida, "EXECUTION BY EDF\n");
-
-    int tempo = 0;
-    int executando = -1;
-    int inicio = 0;
-
-    while (tempo < tempo_total) {
-        verificar_deadlines(instancias, quantidade, tempo);
-
-        int escolhida = escolher_instancia_edf(
-            tarefas,
-            instancias,
-            quantidade,
-            tempo);
-
-        if (escolhida != executando) {
-            if (executando != -1) {
-                char rotulo = instancias[executando].concluida
-                    ? 'F'
-                    : (instancias[executando].perdida ? 'L' : 'H');
-
-                fprintf(saida,
-                        "[%s] for %d units - %c\n",
-                        tarefas[instancias[executando].tarefa].nome,
-                        tempo - inicio,
-                        rotulo);
-            } else if (tempo > inicio) {
-                fprintf(saida, "idle for %d units\n", tempo - inicio);
-            }
-
-            inicio = tempo;
-            executando = escolhida;
-        }
-
-        if (executando != -1) {
-            instancias[executando].executou = 1;
-            instancias[executando].restante--;
-
-            if (instancias[executando].restante == 0)
-                instancias[executando].concluida = 1;
-        }
-
-        tempo++;
-    }
-
-    if (executando != -1) {
-        char rotulo = instancias[executando].concluida
-            ? 'F'
-            : (instancias[executando].perdida ? 'L' : 'H');
-
         fprintf(saida,
-                "[%s] for %d units - %c\n",
-                tarefas[instancias[executando].tarefa].nome,
-                tempo - inicio,
-                rotulo);
-    } else if (tempo > inicio) {
-        fprintf(saida, "idle for %d units\n", tempo - inicio);
+                "idle for %d units\n",
+                tempo - inicio);
     }
 
-    imprimir_resumo(tarefas, instancias, quantidade, num_tarefas, saida);
+    imprimir_resumo(
+        tarefas,
+        instancias,
+        quantidade,
+        num_tarefas,
+        saida);
 }
 
 int main(int argc, char *argv[])
@@ -366,6 +334,15 @@ int main(int argc, char *argv[])
                 "Erro: algoritmo deve ser rate ou edf.\n");
         return 1;
     }
+
+    const char *nome_saida;
+
+    if (strcmp(argv[1], "rate") == 0)
+        nome_saida = "rate_gbm.out";
+    else
+        nome_saida = "edf_gbm.out";
+
+    remove(nome_saida);
 
     FILE *entrada = fopen(argv[2], "r");
 
@@ -447,9 +424,11 @@ int main(int argc, char *argv[])
         tempo_total,
         instancias);
 
-    const char *nome_saida = (strcmp(argv[1], "rate") == 0)
-        ? "rate_gbm.out"
-        : "edf_gbm.out";
+    if (quantidade < 0) {
+        fprintf(stderr,
+                "Erro: numero de instancias excede o limite.\n");
+        return 1;
+    }
 
     FILE *saida = fopen(nome_saida, "w");
 
@@ -459,23 +438,14 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (strcmp(argv[1], "rate") == 0) {
-        executar_rate(
-            tarefas,
-            instancias,
-            quantidade,
-            num_tarefas,
-            tempo_total,
-            saida);
-    } else {
-        executar_edf(
-            tarefas,
-            instancias,
-            quantidade,
-            num_tarefas,
-            tempo_total,
-            saida);
-    }
+    executar_simulacao(
+        tarefas,
+        instancias,
+        quantidade,
+        num_tarefas,
+        tempo_total,
+        saida,
+        strcmp(argv[1], "rate") == 0 ? "RATE" : "EDF");
 
     fclose(saida);
 

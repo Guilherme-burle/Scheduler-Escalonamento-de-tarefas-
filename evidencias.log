@@ -1,0 +1,418 @@
+Script started on 2026-09-09 16:09:42-03:00 [TERM="xterm-256color" TTY="/dev/pts/5" COLUMNS="267" LINES="26"]
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ pwd
+[?2004l
+/home/guilherme/SO/Scheduler
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ whoami
+[?2004l
+guilherme
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ date
+[?2004l
+Wed Sep  9 16:09:53 -03 2026
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheduler voo.[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kecho voo.txt
+[?2004l
+voo.txt
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat voo.txt
+[?2004l
+100
+ATT 20 12 8
+NAV 50 30 15[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheculer rate voo.txt
+[?2004l
+bash: ./scheculer: No such file or directory
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheculer rate voo.txt[C[1P[1@d
+[?2004l
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat rate_gbm.out
+[?2004l
+SIMULACAO
+ALGORITMO: rate
+TEMPO TOTAL: 100
+TAREFAS: 2
+ATT 20 12 8
+NAV 50 30 15
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat rate_gbm.out[8@./scheduler rate voo.tx[C[1P[1P[1P[1P[1@e[1@d[1@f
+[?2004l
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheduler edf voo.txt[7Pcat rate_gbm.ou[C[1P[1P[1P[1P[1@e[1@d[1@f
+[?2004l
+SIMULACAO
+ALGORITMO: edf
+TEMPO TOTAL: 100
+TAREFAS: 2
+ATT 20 12 8
+NAV 50 30 15
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat edf_gbm.out[8@./scheduler edf voo.tx[C[C[1P[1P[1P[1@i[1@n[1@v[1@a[1@l[1@i[1@d[1@o
+[?2004l
+Erro: algoritmo deve ser 'rate' ou 'edf'.
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheduler invalido voo.txt[C[1P[1P[1P[1P[1P[1P[1P[1P[1@r[1@a[1@t[1@e[C[C[C[C[1P[1P[1P[1@i[1@n[1@e[1@x[1@i[1@s[1@t[1@e[1@n[1@t[1@e
+[?2004l
+Erro: nao foi possivel abrir o arquivo 'inexistente.txt'.
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ exit
+[?2004l
+exit
+
+Script done on 2026-09-09 16:12:31-03:00 [COMMAND_EXIT_CODE="1"]
+Script started on 2026-09-09 17:02:00-03:00 [TERM="xterm-256color" TTY="/dev/pts/4" COLUMNS="267" LINES="21"]
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ date
+[?2004l
+Wed Sep  9 17:02:06 -03 2026
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ whomai
+[?2004l
+Command 'whomai' not found, did you mean:
+  command 'whoami' from deb coreutils-from-gnu (0.0.0~ubuntu25)
+  command 'whoami' from deb coreutils-from-uutils (0.0.0~ubuntu25)
+  command 'whoami' from deb coreutils-from-busybox (0.0.0~ubuntu25)
+  command 'whoami' from deb coreutils-from-toybox (0.0.0~ubuntu25)
+Try: sudo apt install <deb name>
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ whoami
+[?2004l
+guilherme
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ pwd
+[?2004l
+/home/guilherme/SO/Scheduler
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheduler rate voo.txt[Kt
+[?2004l
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheduler rate voo.txtpwd[Kwhoamima[C[2Pdateexit[28@./scheduler rate inexistente.tx[C[4Pinvalido voo[C[C[C[C[13Pcat edf_gbm.ou[C[1P[1P[1P[1@r[1@a[1@t[1@e
+[?2004l
+EXECUTION BY RATE
+[ATT] for 28 units - F
+[ATT] for 47 units - F
+[NAV] for 56 units - F
+[ATT] for 66 units - F
+[NAV] for 69 units - F
+[ATT] for 85 units - F
+
+LOST DEADLINES
+
+COMPLETE EXECUTION
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[NAV] 1
+
+KILLED
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ exit
+[?2004l
+exit
+
+Script done on 2026-09-09 17:03:02-03:00 [COMMAND_EXIT_CODE="0"]
+Script started on 2026-09-09 17:26:00-03:00 [TERM="xterm-256color" TTY="/dev/pts/4" COLUMNS="267" LINES="19"]
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ;/
+bin/        boot/       dev/        etc/        home/       init        lib/        lib64/      lost+found/ media/      mnt/        opt/        proc/       root/       run/        sbin/       snap/       srv/        sys/        tmp/        usr/        var/
+]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ;/.[K[K[Kwhoami
+[?2004lguilherme
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ date
+[?2004lWed Sep  9 17:26:17 -03 2026
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ pwd
+[?2004l/home/guilherme/SO/Scheduler
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheduler v[Krate voo.txt
+[?2004l[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat rate_gbm.out 
+[?2004lEXECUTION BY RATE
+[ATT] for 8 units - F
+[NAV] for 15 units - F
+[ATT] for 27 units - F
+[NAV] for 25 units - F
+[ATT] for 46 units - F
+[NAV] for 54 units - F
+[ATT] for 65 units - F
+[NAV] for 67 units - F
+[ATT] for 84 units - F
+
+LOST DEADLINES
+[NAV] 1
+
+COMPLETE EXECUTION
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[NAV] 1
+
+KILLED
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat rate_gbm.out ./scheduler rate voo.txt[C[1P[1P[1P[1P[1@e[1@d[1@f
+[?2004lErro: EDF sera implementado no proximo commit.
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ exit
+[?2004lexit
+
+Script done on 2026-09-09 17:27:04-03:00 [COMMAND_EXIT_CODE="1"]
+Script started on 2026-09-09 20:14:54-03:00 [TERM="xterm-256color" TTY="/dev/pts/4" COLUMNS="267" LINES="19"]
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ whomai[K[K[Kami
+[?2004lguilherme
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ date
+[?2004lWed Sep  9 20:15:07 -03 2026
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ pwd
+[?2004l/home/guilherme/SO/Scheduler
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheduler edf voo.txt
+[?2004l[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat voo.txt 
+[?2004l100
+ATT 20 12 8
+NAV 50 30 15[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat edf.[K_gbm.out 
+[?2004lEXECUTION BY EDF
+[ATT] for 8 units - F
+[NAV] for 15 units - F
+[ATT] for 27 units - F
+[NAV] for 25 units - F
+[ATT] for 46 units - F
+[NAV] for 54 units - F
+[ATT] for 65 units - F
+[NAV] for 67 units - F
+[ATT] for 84 units - F
+
+LOST DEADLINES
+[NAV] 1
+
+COMPLETE EXECUTION
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[NAV] 1
+
+KILLED
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./s'[Kcheduler rate va[Koo.txt
+[?2004l[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat rate_gbm.out 
+[?2004lEXECUTION BY RATE
+[ATT] for 8 units - F
+[NAV] for 15 units - F
+[ATT] for 27 units - F
+[NAV] for 25 units - F
+[ATT] for 46 units - F
+[NAV] for 54 units - F
+[ATT] for 65 units - F
+[NAV] for 67 units - F
+[ATT] for 84 units - F
+
+LOST DEADLINES
+[NAV] 1
+
+COMPLETE EXECUTION
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[NAV] 1
+
+KILLED
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ exit
+[?2004lexit
+
+Script done on 2026-09-09 20:16:03-03:00 [COMMAND_EXIT_CODE="0"]
+Script started on 2026-09-09 20:39:45-03:00 [TERM="xterm-256color" TTY="/dev/pts/4" COLUMNS="267" LINES="28"]
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ exitcat rate_gbm.out exit[K[Kwhoami
+[?2004lguilherme
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ atd[K[K[Kdate
+[?2004lWed Sep  9 20:39:56 -03 2026
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ pwd
+[?2004l/home/guilherme/SO/Scheduler
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheduler ef[K[Kedf voo.txt
+[?2004l[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat e[K[K edf_gbm.out 
+[?2004lEXECUTION BY EDF
+[ATT] for 8 units - F
+[NAV] for 18 units - F
+[ATT] for 30 units - F
+[ATT] for 46 units - F
+[NAV] for 54 units - F
+[ATT] for 65 units - F
+[NAV] for 67 units - F
+[ATT] for 84 units - F
+
+LOST DEADLINES
+
+COMPLETE EXECUTION
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[NAV] 1
+[NAV] 1
+
+KILLED
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat edf_gbm.out [Kcat edf_gbm.out ./scheduler edf voo.txt[1P[1P[1P[1@r[1@a[1@t[1@e
+[?2004l[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheduler rate voo.txt[8Pcat edf_gbm.out ./scheduler edf voo.txtpwd[K./scheduler edf voo.txt[7Pcat edf_gbm.out ./scheduler rate voo.txt[Kcay[Kt rate_gbm.out 
+[?2004lEXECUTION BY RATE
+[ATT] for 8 units - F
+[NAV] for 15 units - F
+[ATT] for 27 units - F
+[NAV] for 25 units - F
+[ATT] for 46 units - F
+[NAV] for 54 units - F
+[ATT] for 65 units - F
+[NAV] for 67 units - F
+[ATT] for 84 units - F
+
+LOST DEADLINES
+[NAV] 1
+
+COMPLETE EXECUTION
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[ATT] 0
+[NAV] 1
+
+KILLED
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ clear[K[K[K[K[Kexit
+[?2004lexit
+
+Script done on 2026-09-09 20:41:07-03:00 [COMMAND_EXIT_CODE="0"]
+Script started on 2026-09-09 21:53:43-03:00 [TERM="xterm-256color" TTY="/dev/pts/4" COLUMNS="267" LINES="39"]
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ whoami
+[?2004lguilherme
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ pwd
+[?2004l/home/guilherme/SO/Scheduler
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ date
+[?2004lWed Sep  9 21:53:51 -03 2026
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ date[1Ppwdwhoami[2Pexitcat rate_gbm.out ./scheduler rate voo.txt
+[?2004l[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat voo.txt 
+[?2004l100
+NAV 50 30 15
+ATT 20 12 8
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat voo.txt [1P [1P [1P [1P [1P [1P [1P e d f _gbm.out 
+[?2004lEXECUTION BY EDF
+[ATT] for 8 units - F
+[NAV] for 15 units - F
+[ATT] for 8 units - F
+idle for 9 units
+[ATT] for 8 units - F
+idle for 2 units
+[NAV] for 10 units - H
+[ATT] for 8 units - F
+[NAV] for 5 units - F
+idle for 7 units
+[ATT] for 8 units - F
+idle for 12 units
+
+LOST DEADLINES
+[ATT] 0
+[NAV] 0
+
+COMPLETE EXECUTION
+[ATT] 2
+[NAV] 5
+
+KILLED
+[ATT] 0
+[NAV] 0
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ exit
+[?2004lexit
+
+Script done on 2026-09-09 21:54:13-03:00 [COMMAND_EXIT_CODE="0"]
+Script started on 2026-09-09 22:18:56-03:00 [TERM="xterm-256color" TTY="/dev/pts/5" COLUMNS="250" LINES="35"]
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ whoami
+[?2004lguilherme
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ date
+[?2004lWed Sep  9 22:19:06 -03 2026
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ pwd
+[?2004l/home/guilherme/SO/Scheduler
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat voo.txt 
+[?2004l100
+NAV 50 30 15
+ATT 20 12 8
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat voo.txt pwd[Kdatewhoami[2Pexitcat edf_gbm.out [4Pvoo.tx[C[C./scheduler rate voo.txt[C[C[1P[1P[1P[C[1@d[1@f
+[?2004l[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheduler edf voo.txt[11Pcat voo.txt pwd[Kcat voo.txt ./scheduler edf voo.txt[Kcat edf_gbm.out 
+[?2004lEXECUTION BY EDF
+[ATT] for 8 units - F
+[NAV] for 15 units - F
+[ATT] for 8 units - F
+idle for 9 units
+[ATT] for 8 units - F
+idle for 2 units
+[NAV] for 10 units - H
+[ATT] for 8 units - F
+[NAV] for 5 units - F
+idle for 7 units
+[ATT] for 8 units - F
+idle for 12 units
+
+LOST DEADLINES
+[ATT] 0
+[NAV] 0
+
+COMPLETE EXECUTION
+[ATT] 5
+[NAV] 2
+
+KILLED
+[ATT] 0
+[NAV] 0
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ exit
+[?2004lexit
+
+Script done on 2026-09-09 22:20:11-03:00 [COMMAND_EXIT_CODE="0"]
+Script started on 2026-09-09 23:05:34-03:00 [TERM="xterm-256color" TTY="/dev/pts/5" COLUMNS="250" LINES="25"]
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ whoami
+[?2004lguilherme
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ date
+[?2004lWed Sep  9 23:05:40 -03 2026
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ pwd
+[?2004l/home/guilherme/SO/Scheduler
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ make clean
+[?2004lrm -f scheduler rate_gbm.out edf_gbm.out
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ make
+[?2004lgcc -Wall -Wextra -std=c11 -O2 -o scheduler main.c
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheduler rate voo.txt
+[?2004l[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat rate_gbm.out 
+[?2004lEXECUTION BY RATE
+[ATT] for 8 units - F
+[NAV] for 12 units - H
+[ATT] for 8 units - F
+[NAV] for 2 units - L
+idle for 10 units
+[ATT] for 8 units - F
+idle for 2 units
+[NAV] for 10 units - H
+[ATT] for 8 units - F
+[NAV] for 5 units - F
+idle for 7 units
+[ATT] for 8 units - F
+idle for 12 units
+
+LOST DEADLINES
+[ATT] 0
+[NAV] 1
+
+COMPLETE EXECUTION
+[ATT] 5
+[NAV] 1
+
+KILLED
+[ATT] 0
+[NAV] 0
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat rate_gbm.out ./scheduler rate voo.txt[C[1P[1P[1P[1P[1@e[1@d[1@f
+[?2004l[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheduler edf voo.txt[Kcat es[Kdf_gbm.out 
+[?2004lEXECUTION BY EDF
+[ATT] for 8 units - F
+[NAV] for 15 units - F
+[ATT] for 8 units - F
+idle for 9 units
+[ATT] for 8 units - F
+idle for 2 units
+[NAV] for 10 units - H
+[ATT] for 8 units - F
+[NAV] for 5 units - F
+idle for 7 units
+[ATT] for 8 units - F
+idle for 12 units
+
+LOST DEADLINES
+[ATT] 0
+[NAV] 0
+
+COMPLETE EXECUTION
+[ATT] 5
+[NAV] 2
+
+KILLED
+[ATT] 0
+[NAV] 0
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ [K]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ cat edf_gbm.out ./scheduler edf voo.txt[1P[1P[1P[1@i[1@n[1@v[1@a[1@l[1@i[1@d[1@o
+[?2004lErro: nao foi possivel abrir o arquivo.
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ ./scheduler edf invalido.txt[C[12Pcat edf_gbm.out ./scheduler edf voo.txt[1P[1P[1P[1@i[1@n[1@v[1@a[1@l[1@i[1@d[1@o
+[?2004lErro: algoritmo deve ser rate ou edf.
+[?2004h]0;guilherme@DESKTOP-96RH0LV: ~/SO/Scheduler[01;32mguilherme@DESKTOP-96RH0LV[00m:[01;34m~/SO/Scheduler[00m$ exit
+[?2004lexit
+
+Script done on 2026-09-09 23:07:30-03:00 [COMMAND_EXIT_CODE="1"]
